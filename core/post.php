@@ -8,6 +8,8 @@ class Post {
     public int $id;
     public string $profile;
     public string $name;
+    public string $email;
+    public int $age;
     public string $address;
     public string $neighborhood;
     public string $zipCode;
@@ -23,6 +25,8 @@ class Post {
         $sql = 'INSERT INTO ' . $this->table . ' 
                 SET profile = :profile, 
                     name = :name, 
+                    email = :email,
+                    age = :age,
                     address = :address, 
                     neighborhood = :neighborhood, 
                     zip_code = :zipCode,
@@ -32,14 +36,18 @@ class Post {
 
         $this->profile = htmlspecialchars(strip_tags($this->profile));
         $this->name = htmlspecialchars(strip_tags($this->name));
+        $this->email = htmlspecialchars(strip_tags($this->email));
+        $this->age = htmlspecialchars(strip_tags($this->age));
         $this->address = htmlspecialchars(strip_tags($this->address));
         $this->neighborhood = htmlspecialchars(strip_tags($this->neighborhood));
         $this->zipCode = htmlspecialchars(strip_tags($this->zipCode));
         $this->state = htmlspecialchars(strip_tags($this->state));
         $this->biography = htmlspecialchars(strip_tags($this->biography));
-
+        
         $statement->bindParam(':profile', $this->profile);
         $statement->bindParam(':name', $this->name);
+        $statement->bindParam(':email', $this->email);
+        $statement->bindParam(':age', $this->age);
         $statement->bindParam(':address', $this->address);
         $statement->bindParam(':neighborhood', $this->neighborhood);
         $statement->bindParam(':zipCode', $this->zipCode);
@@ -63,41 +71,58 @@ class Post {
         return $statement;
     }
 
-    public function readById(){
+    public function readByEmail(){
         $columns = [
             'profile',
             'name',
+            'email',
+            'age',
             'address',
             'neighborhood',
             'zip_code',
             'state',
             'biography'
         ];
-
+    
         $sql = 'SELECT ' . implode(',', $columns) . ' 
                 FROM ' . $this->table . '
-                WHERE id =? LIMIT 1';
-        $statement = $this->mySql->prepare($sql);
-        $statement->bindParam(1, $this->id);
-        $statement->execute();
-        $row = $statement->fetch(PDO::FETCH_ASSOC);
+                WHERE email =? LIMIT 1';
         
-        $this->profile = $row['profile'];
-        $this->name = $row['name'];
-        $this->address = $row['address'];
-        $this->neighborhood = $row['neighborhood'];
-        $this->zipCode = $row['zip_code'];
-        $this->state = $row['state'];
-        $this->biography = $row['biography'];
-
-        return $statement;
+        try {
+            $statement = $this->mySql->prepare($sql);
+            $statement->bindParam(1, $this->email);
+            $statement->execute();
+    
+            if ($statement->rowCount() > 0) {
+                $row = $statement->fetch(PDO::FETCH_ASSOC);
+    
+                $this->profile = $row['profile'];
+                $this->name = $row['name'];
+                $this->email = $row['email'];
+                $this->age = $row['age'];
+                $this->address = $row['address'];
+                $this->neighborhood = $row['neighborhood'];
+                $this->zipCode = $row['zip_code'];
+                $this->state = $row['state'];
+                $this->biography = $row['biography'];
+    
+                return $statement;
+            } else {
+                return false;
+            }
+        } catch (PDOException $e) {
+            return false;
+        }
     }
+    
 
     public function update(){
 
         $sql = 'UPDATE ' . $this->table . ' 
                 SET profile = :profile, 
                     name = :name, 
+                    email = :email,
+                    age = :age,
                     address = :address, 
                     neighborhood = :neighborhood, 
                     zip_code = :zipCode,
@@ -109,6 +134,8 @@ class Post {
         $this->id = htmlspecialchars(strip_tags($this->id));
         $this->profile = htmlspecialchars(strip_tags($this->profile));
         $this->name = htmlspecialchars(strip_tags($this->name));
+        $this->email = htmlspecialchars(strip_tags($this->email));
+        $this->age = htmlspecialchars(strip_tags($this->age));
         $this->address = htmlspecialchars(strip_tags($this->address));
         $this->neighborhood = htmlspecialchars(strip_tags($this->neighborhood));
         $this->zipCode = htmlspecialchars(strip_tags($this->zipCode));
@@ -118,6 +145,8 @@ class Post {
         $statement->bindParam(':id', $this->id);
         $statement->bindParam(':profile', $this->profile);
         $statement->bindParam(':name', $this->name);
+        $statement->bindParam(':email', $this->email);
+        $statement->bindParam(':age', $this->age);
         $statement->bindParam(':address', $this->address);
         $statement->bindParam(':neighborhood', $this->neighborhood);
         $statement->bindParam(':zipCode', $this->zipCode);

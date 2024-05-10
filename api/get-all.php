@@ -19,6 +19,8 @@
             $item = array(
                 'profile' => $profile,
                 'name' => $name,
+                'email' => $email,
+                'age' => $age,
                 'address' => $address,
                 'neighborhod' => $neighborhood,
                 'zipCode' => $zip_code,
@@ -30,7 +32,8 @@
 
         echo json_encode($data);
     } else {
-         echo json_encode(
+        http_response_code(404);
+        echo json_encode(
             array('message' => 'Nenhum registro foi encontrado.')
         );
     }

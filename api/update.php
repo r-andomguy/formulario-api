@@ -13,6 +13,7 @@
     $post->id = $data->id;
     $post->profile = $data->profile;
     $post->name = $data->name;
+    $post->email = $data->email;
     $post->address = $data->address;
     $post->neighborhood = $data->neighborhood;
     $post->zipCode = $data->zipCode;
