@@ -10,6 +10,10 @@
     $post = new Post($db);
     $data = json_decode(file_get_contents('php://input'));
     
+    if(empty($data->profile)){
+        $post->profile = null;
+    }
+
     $post->profile = $data->profile;
     $post->name = $data->name;
     $post->email = $data->email;

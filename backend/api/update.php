@@ -10,17 +10,17 @@
     $post = new Post($db);
     $data = json_decode(file_get_contents('php://input'));
     
-    $post->id = $data->id;
     $post->profile = $data->profile;
     $post->name = $data->name;
+    $post->age = $data->age;
     $post->email = $data->email;
     $post->address = $data->address;
     $post->neighborhood = $data->neighborhood;
     $post->zipCode = $data->zipCode;
     $post->state = $data->state;
     $post->biography = $data->biography;
-
-    if($post->update()){
+    
+    if ($post->update()) {
         echo json_encode(
             array('message' => 'Registro atualizado com sucesso.')
         );

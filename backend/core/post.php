@@ -21,6 +21,26 @@ class Post {
     }
 
     public function create(){
+        $requiredFields = [
+            'name', 
+            'email', 
+            'age', 
+            'address', 
+            'neighborhood', 
+            'zipCode', 
+            'state', 
+            'biography'
+        ];
+    
+        foreach ($requiredFields as $field) {
+            if (empty($this->{$field})) {
+                echo json_encode(
+                    array('message' => 'O campo ' . $field . ' é obrigatório.')
+                );
+                return false;
+            }
+        }
+
 
         $sql = 'INSERT INTO ' . $this->table . ' 
                 SET profile = :profile, 
@@ -31,7 +51,7 @@ class Post {
                     neighborhood = :neighborhood, 
                     zip_code = :zipCode,
                     state = :state,
-                    biography = :biography'; 
+                    biography = :biography';
         $statement = $this->mySql->prepare($sql);
 
         $this->profile = htmlspecialchars(strip_tags($this->profile));
@@ -43,7 +63,7 @@ class Post {
         $this->zipCode = htmlspecialchars(strip_tags($this->zipCode));
         $this->state = htmlspecialchars(strip_tags($this->state));
         $this->biography = htmlspecialchars(strip_tags($this->biography));
-        
+
         $statement->bindParam(':profile', $this->profile);
         $statement->bindParam(':name', $this->name);
         $statement->bindParam(':email', $this->email);
@@ -53,16 +73,16 @@ class Post {
         $statement->bindParam(':zipCode', $this->zipCode);
         $statement->bindParam(':state', $this->state);
         $statement->bindParam(':biography', $this->biography);
-        
-        if ($statement->execute()){
+
+        if ($statement->execute()) {
             return true;
         }
-        
+
         printf('Error %s. ' . PHP_EOL, $statement->error);
         return false;
     }
 
-    public function read() {
+    public function read(){
 
         $sql = 'SELECT * FROM ' . $this->table;
         $statement = $this->mySql->prepare($sql);
@@ -83,19 +103,19 @@ class Post {
             'state',
             'biography'
         ];
-    
+
         $sql = 'SELECT ' . implode(',', $columns) . ' 
                 FROM ' . $this->table . '
                 WHERE email =? LIMIT 1';
-        
+
         try {
             $statement = $this->mySql->prepare($sql);
             $statement->bindParam(1, $this->email);
             $statement->execute();
-    
+
             if ($statement->rowCount() > 0) {
                 $row = $statement->fetch(PDO::FETCH_ASSOC);
-    
+
                 $this->profile = $row['profile'];
                 $this->name = $row['name'];
                 $this->email = $row['email'];
@@ -105,7 +125,7 @@ class Post {
                 $this->zipCode = $row['zip_code'];
                 $this->state = $row['state'];
                 $this->biography = $row['biography'];
-    
+
                 return $statement;
             } else {
                 return false;
@@ -114,10 +134,9 @@ class Post {
             return false;
         }
     }
-    
+
 
     public function update(){
-
         $sql = 'UPDATE ' . $this->table . ' 
                 SET profile = :profile, 
                     name = :name, 
@@ -128,10 +147,9 @@ class Post {
                     zip_code = :zipCode,
                     state = :state,
                     biography = :biography
-                WHERE id = :id'; 
+                WHERE email = :email';
         $statement = $this->mySql->prepare($sql);
 
-        $this->id = htmlspecialchars(strip_tags($this->id));
         $this->profile = htmlspecialchars(strip_tags($this->profile));
         $this->name = htmlspecialchars(strip_tags($this->name));
         $this->email = htmlspecialchars(strip_tags($this->email));
@@ -142,7 +160,6 @@ class Post {
         $this->state = htmlspecialchars(strip_tags($this->state));
         $this->biography = htmlspecialchars(strip_tags($this->biography));
 
-        $statement->bindParam(':id', $this->id);
         $statement->bindParam(':profile', $this->profile);
         $statement->bindParam(':name', $this->name);
         $statement->bindParam(':email', $this->email);
@@ -152,30 +169,27 @@ class Post {
         $statement->bindParam(':zipCode', $this->zipCode);
         $statement->bindParam(':state', $this->state);
         $statement->bindParam(':biography', $this->biography);
-        
-        if ($statement->execute()){
+
+        if ($statement->execute()) {
             return true;
         }
-        
+
         printf('Error %s. ' . PHP_EOL, $statement->error);
         return false;
+        
     }
 
     public function delete(){
-        $sql = 'DELETE FROM ' . $this->table . ' WHERE id = :id';
+        $sql = 'DELETE FROM ' . $this->table . ' WHERE email = :email';
         $statement = $this->mySql->prepare($sql);
-        $this->id = htmlspecialchars(strip_tags($this->id));
-        $statement->bindParam(':id', $this->id);
+        $this->email = htmlspecialchars(strip_tags($this->email));
+        $statement->bindParam(':email', $this->email);
 
-        if ($statement->execute()){
+        if ($statement->execute()) {
             return true;
         }
-        
+
         printf('Error %s. ' . PHP_EOL, $statement->error);
         return false;
-
     }
-
 }
-
-?>
