@@ -55,6 +55,8 @@ Este guia detalha os passos necessários para configurar o ambiente de desenvolv
 
 3. **Executando o Servidor PHP:**
 
-    * Para executar o servidor PHP, abra o Wampserver e clique no botão "Iniciar" ao lado do ícone do PHP.
-    * Certifique-se de que o status do PHP esteja indicado como "Executando".
-    * No seu navegador web, acesse o endereço `http://localhost:8000` para verificar se o servidor PHP está funcionando corretamente.
+    * Para executar o servidor PHP, rode:
+      ```bash
+         cd .\backend\
+         php -S localhost:8000
+      ```
