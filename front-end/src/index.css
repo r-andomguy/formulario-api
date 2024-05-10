@@ -1,0 +1,112 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+    --primary-color: #4D377C;
+    --secondary-color: #925F9D;
+}
+
+.text-primary {
+    color: #4D377C;
+}
+  
+.text-secondary {
+    color: #925F9D;
+}
+  
+
+header{
+    padding: 2rem;
+    background-color: #FAFAFA;
+    border-bottom: 1px solid grey;
+    color: #4D377C;
+    font-weight: 700;
+}
+
+.wrapper{
+   position: relative;
+   display: flex;
+   flex-direction: column;
+   border-radius: 14px ;
+   position: absolute; 
+   top: 33%; 
+   background-color: white;
+   border-left: 17px  #925F9D outset;
+   border-top: 12px  #925F9D outset;
+   z-index: 2;
+}
+
+.wrapper-mobile{
+    display: flex;
+    flex-direction: column;
+    border-radius: 14px ;
+    top: 33%; 
+    background-color: white;
+    border: 4px solid #925F9D ;
+    z-index: 2;
+}
+ 
+
+.shadow{
+    -webkit-box-shadow: -17px 18px 16px 1px rgba(0,0,0,0.15);
+    -moz-box-shadow: -17px 18px 16px 1px rgba(0,0,0,0.15);
+}
+
+.img-wrapper{
+    border-radius: 100%;
+    align-self: center;
+    background-color: rgb(209, 209, 209);
+}
+
+input[type='file'] {
+    display: none
+}
+  
+label, button {
+    border-radius: 5px;
+    color: #fff;
+    cursor: pointer;
+    justify-content: center;
+    display: flex;  
+    text-align: center;
+    flex-direction: column;  
+    background-color: #925F9D;
+    max-height: 40px;
+}
+
+input{
+    background-color: #FAF9F9;
+    border-bottom: 1px solid #4D377C;
+    border-radius: 5px;
+    padding: 8px;
+    width: 100%
+}
+
+textarea{
+    background-color: #FAF9F9;
+    border-bottom: 1px solid #4D377C;
+    border-radius: 5px;
+    padding: 8px;
+    width: 100%;
+    height: 80px;
+    max-height: 100px;
+}
+
+#popup-overlay {
+      background-color: rgba(0, 0, 0, 0.5);
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 9999;
+}
+
+#popup {
+      background-color: #fff;
+      max-width: 400px;
+      margin: 100px auto;
+      padding: 20px;
+      border-radius: 5px;
+}
