@@ -9,7 +9,7 @@ function displayFileName() {
 }
 
 function fetchDataFromAPI(userEmail) {
-    const apiUrl = `http://localhost/formulario-api/read_by_email.php?email=${userEmail}`;
+    const apiUrl = `http://localhost:8000/index.php/read_by_email.php?email=${userEmail}`;
   
     fetch(apiUrl)
       .then(response => {
@@ -194,7 +194,7 @@ function sendDataToUpdateAPI(email, name, age, profile, address, neighborhood, z
   }    
   
   
-  const apiUrl = `http://localhost/formulario-api/update.php?email=${userEmail}`;
+  const apiUrl = `http://localhost:8000/index.php/update.php?email=${userEmail}`;
 
   // Faz a solicitação PUT para a rota da API
   fetch(apiUrl, {
@@ -239,7 +239,7 @@ function sendDataToCreateAPI(email, name, age,profile, address, neighborhood, zi
     formData.append('biography', biography);
   
     // Faz a solicitação POST para a rota da API
-    fetch('http://localhost/formulario-api/create.php', {
+    fetch('http://localhost:8000/index.php/create.php', {
       method: 'POST',
       body: formData // Passa o objeto FormData como corpo da solicitação
     })
