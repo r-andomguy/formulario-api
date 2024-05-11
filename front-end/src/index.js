@@ -9,7 +9,7 @@ function displayFileName() {
 }
 
 function fetchDataFromAPI(userEmail) {
-    const apiUrl = `http://localhost:8000/index.php/read_by_email.php?email=${userEmail}`;
+    const apiUrl = `http://localhost:8080/backend/api.php?email=${userEmail}`;
   
     fetch(apiUrl)
       .then(response => {
@@ -37,7 +37,9 @@ function fetchDataFromAPI(userEmail) {
       })
       .then(data => {
         // Se não houver erro, atualiza os elementos com os dados da API
+        console.log('Dados enviados,',data);
         const neighborhoodAndState = `${data.neighborhood} - ${data.state}`;
+        document.getElementById('name').textContent = data.name;
         updateElementsWithData(data, neighborhoodAndState);
       })
       .catch(error => {
@@ -52,18 +54,16 @@ function updateElementsWithDefaultData(defaultData) {
     document.getElementById('age').textContent = defaultData.age;
     document.getElementById('address').textContent = defaultData.address;
     document.getElementById('ufData').textContent = defaultData.neighborhood + ' - ' + defaultData.state;
-    document.getElementById('zipCode').textContent = defaultData.zipCode;
     document.getElementById('biography').textContent = defaultData.biography;
 }
   
 // Função para atualizar os elementos com os dados da API
 function updateElementsWithData(data, neighborhoodAndState) {
-    document.getElementById('profile').src = data.profile;
+    document.getElementById('profile').src = data.profile || '';
     document.getElementById('name').textContent = data.name;
     document.getElementById('age').textContent = data.age;
     document.getElementById('address').textContent = data.address;
     document.getElementById('ufData').textContent = neighborhoodAndState;
-    document.getElementById('zipCode').textContent = data.zipCode;
     document.getElementById('biography').textContent = data.biography;
 
     const nameInput = document.getElementById('inputName');
@@ -152,7 +152,7 @@ function sendDataToAPI() {
 
     sendDataToUpdateAPI(email,name,age, profile,address, neighborhood, zipCode, state,biography)
       .then(response => {
-        if (response.message === 'Email não encontrado. Não foi possível atualizar o registro.') {
+        if (response.message === 'Não há registros ligados a esse email.') {
           // Se o e-mail não for encontrado, envia os dados para a rota de criação
           sendDataToCreateAPI(email,name,age,profile, address, neighborhood, zipCode, state,biography);
         } else {
@@ -193,14 +193,16 @@ function sendDataToUpdateAPI(email, name, age, profile, address, neighborhood, z
     formData.append('profile', profile);
   }    
   
-  
-  const apiUrl = `http://localhost:8000/index.php/update.php?email=${userEmail}`;
-
+  const jsonData = JSON.stringify(formData);
+  const apiUrl = `http://localhost:8080/backend/api.php?email=${userEmail}`;
   // Faz a solicitação PUT para a rota da API
   fetch(apiUrl, {
       method: 'PUT',
-      body: formData // Passa o objeto FormData como corpo da solicitação
-  })
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: jsonData // Passa o objeto JSON como corpo da solicitação
+    })
   .then(response => {
       if (!response.ok) {
           throw new Error('Erro ao enviar dados para a API');
@@ -238,10 +240,14 @@ function sendDataToCreateAPI(email, name, age,profile, address, neighborhood, zi
     formData.append('state', state);
     formData.append('biography', biography);
   
+    const jsonData = JSON.stringify(formData);
     // Faz a solicitação POST para a rota da API
-    fetch('http://localhost:8000/index.php/create.php', {
+    fetch('http://localhost:8080/backend/api.php', {
       method: 'POST',
-      body: formData // Passa o objeto FormData como corpo da solicitação
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: jsonData // Passa o objeto JSON como corpo da solicitação
     })
     .then(response => {
       if (!response.ok) {
