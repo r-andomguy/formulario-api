@@ -870,6 +870,10 @@ video {
   height: 100%;
 }
 
+.max-h-\[400px\] {
+  max-height: 400px;
+}
+
 .w-24 {
   width: 6rem;
 }

@@ -1,10 +1,10 @@
 <?php
 
-$host = 'localhost';
-$db = 'formulario_api';
-$port = 3306;
-$user = 'root';
-$pass = 'Rib@s550689#';
+$host = '';
+$db = '';
+$port = '';
+$user = '';
+$pass = '';
 
 try {
     $conn = new PDO("mysql:host=$host;port=$port;dbname=$db;charset=utf8", $user, $pass);

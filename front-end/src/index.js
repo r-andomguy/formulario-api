@@ -37,10 +37,9 @@ function fetchDataFromAPI(userEmail) {
       })
       .then(data => {
         // Se não houver erro, atualiza os elementos com os dados da API
-        console.log('Dados enviados,',data);
-        const neighborhoodAndState = `${data.neighborhood} - ${data.state}`;
-        document.getElementById('name').textContent = data.name;
-        updateElementsWithData(data, neighborhoodAndState);
+        const userData = data[0];
+        const neighborhoodAndState = `${userData.neighborhood} - ${userData.state}`;
+        updateElementsWithData(userData, neighborhoodAndState);
       })
       .catch(error => {
         console.error('Erro:', error.message);
@@ -58,13 +57,13 @@ function updateElementsWithDefaultData(defaultData) {
 }
   
 // Função para atualizar os elementos com os dados da API
-function updateElementsWithData(data, neighborhoodAndState) {
-    document.getElementById('profile').src = data.profile || '';
-    document.getElementById('name').textContent = data.name;
-    document.getElementById('age').textContent = data.age;
-    document.getElementById('address').textContent = data.address;
+function updateElementsWithData(userData, neighborhoodAndState) {
+    document.getElementById('profile').src = userData.profile || '';
+    document.getElementById('name').textContent = userData.name;
+    document.getElementById('age').textContent = userData.age;
+    document.getElementById('address').textContent = userData.address;
     document.getElementById('ufData').textContent = neighborhoodAndState;
-    document.getElementById('biography').textContent = data.biography;
+    document.getElementById('biography').textContent = userData.biography;
 
     const nameInput = document.getElementById('inputName');
     const ageInput = document.getElementById('ageInput');
@@ -75,13 +74,13 @@ function updateElementsWithData(data, neighborhoodAndState) {
     const biographyInput = document.getElementById('bioInput');
   
     // Define os valores dos inputs com os dados obtidos da API
-    nameInput.value = data.name;
-    ageInput.value = data.age;
-    addressInput.value = data.address;
-    neighborhoodInput.value = data.neighborhood;
-    stateInput.value = data.state;
-    zipCodeInput.value = data.zipCode;
-    biographyInput.value = data.biography;
+    nameInput.value = userData.name;
+    ageInput.value = userData.age;
+    addressInput.value = userData.address;
+    neighborhoodInput.value = userData.neighborhood;
+    stateInput.value = userData.state;
+    zipCodeInput.value = userData.zipCode;
+    biographyInput.value = userData.biography;
 }
 
 // Variável global para armazenar o email
@@ -131,7 +130,6 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-
 function sendDataToAPI() {
     const name = document.getElementById('inputName').value.trim();
     const age = document.getElementById('ageInput').value.trim();
@@ -144,6 +142,7 @@ function sendDataToAPI() {
     const profile = fileInput.files[0]; 
     const email = userEmail;
 
+    
     if (!name || !age || !address || !neighborhood || !zipCode || !state || !biography) {
 
       alert("Por favor, preencha todos os campos obrigatórios");
@@ -175,7 +174,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function sendDataToUpdateAPI(email, name, age, profile, address, neighborhood, zipCode, state, biography) {
-
+  return new Promise((resolve, reject) => {
   const formData = new FormData();
   formData.append('email', email);
   formData.append('name', name);
@@ -188,27 +187,36 @@ function sendDataToUpdateAPI(email, name, age, profile, address, neighborhood, z
   // Verifica se o perfil não é nulo
   if (!profile) {
     console.log('O perfil não foi alterado. Não será enviado para a API.');
-    return; // se o perfil for nulo não ocorre o append
   } else{
+    console.log(profile);
     formData.append('profile', profile);
   }    
   
-  const jsonData = JSON.stringify(formData);
+  const jsonData = {
+    email: email,
+    name: name,
+    age: age,
+    address: address,
+    neighborhood: neighborhood,
+    zipCode: zipCode,
+    state: state,
+    biography: biography,
+  };
+  
+  if (profile) {
+    jsonData.profile = profile;
+  }
+
   const apiUrl = `http://localhost:8080/backend/api.php?email=${userEmail}`;
+  console.log(jsonData);
   // Faz a solicitação PUT para a rota da API
   fetch(apiUrl, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json'
       },
-      body: jsonData // Passa o objeto JSON como corpo da solicitação
+      body: JSON.stringify(jsonData) // Passa o objeto JSON como corpo da solicitação
     })
-  .then(response => {
-      if (!response.ok) {
-          throw new Error('Erro ao enviar dados para a API');
-      }
-      return response.json();
-  })
   .then(responseData => {
       // Lida com a resposta da API, se necessário
       console.log('Resposta da API:', responseData);
@@ -216,8 +224,10 @@ function sendDataToUpdateAPI(email, name, age, profile, address, neighborhood, z
   })
   .catch(error => {
       console.error('Erro:', error.message);
-      alert('Ocorreu um erro ao enviar dados para a API. Por favor, tente novamente mais tarde.');
   });
+  const response = { message: 'Registro atualizado com sucesso.' };
+  resolve(response);
+});
 }
 
 
