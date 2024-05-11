@@ -16,6 +16,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET'){
         $forms = $statement->fetchAll(PDO::FETCH_ASSOC);
 
         if (empty($forms)){
+            http_response_code(404);
             echo json_encode(['message' => 'Não há registros ligados a esse email.']);
             exit;
         }
@@ -120,6 +121,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'PUT') {
         $row = $statement->fetchAll(PDO::FETCH_ASSOC);
 
         if (empty($row)){
+            http_response_code(404);
             echo json_encode(['message' => 'Não há registros ligados a esse email.']);
             exit;
         }

@@ -14,7 +14,6 @@ function fetchDataFromAPI(userEmail) {
     fetch(apiUrl)
       .then(response => {
         if (!response.ok) {
-          // Se ocorrer um erro HTTP, verifica se é erro 404
           if (response.status === 404) {
 
             const defaultData = {
@@ -26,12 +25,9 @@ function fetchDataFromAPI(userEmail) {
               zipCode: 'Seu CEP',
               biography: 'Sua biografia'
             };
-            // Atualiza os elementos com os dados padrão
+
             updateElementsWithDefaultData(defaultData);
-            throw new Error('Nenhum registro foi encontrado.');
           }
-          // Se for outro tipo de erro HTTP, lança uma exceção
-          throw new Error('Erro ao acessar a API');
         }
         return response.json();
       })
@@ -39,11 +35,11 @@ function fetchDataFromAPI(userEmail) {
         // Se não houver erro, atualiza os elementos com os dados da API
         const userData = data[0];
         const neighborhoodAndState = `${userData.neighborhood} - ${userData.state}`;
+        console.log(userData);
         updateElementsWithData(userData, neighborhoodAndState);
       })
       .catch(error => {
         console.error('Erro:', error.message);
-        alert('Ocorreu um erro ao acessar a API. Por favor, tente novamente mais tarde.');
       });
 }
   
@@ -150,17 +146,19 @@ function sendDataToAPI() {
   }
 
     sendDataToUpdateAPI(email,name,age, profile,address, neighborhood, zipCode, state,biography)
-      .then(response => {
-        if (response.message === 'Não há registros ligados a esse email.') {
-          // Se o e-mail não for encontrado, envia os dados para a rota de criação
-          sendDataToCreateAPI(email,name,age,profile, address, neighborhood, zipCode, state,biography);
-        } else {
-          // Se o e-mail for encontrado, o registro foi atualizado com sucesso
-          console.log('Registro atualizado com sucesso:', response);
-        }
+    .then(response => {
+      // Se não houver erro, o registro foi atualizado com sucesso
+      console.log('Registro atualizado com sucesso:', response);
     })
-      .catch(error => {
+    .catch(error => {
+      // Se o erro for 404, chama a função para criar um novo registro
+      if (error.response?.status === 404) {
+        console.log('Erro 404: Registro não encontrado. Chamando a função para criar um novo registro...');
+        sendDataToCreateAPI(email, name, age, profile, address, neighborhood, zipCode, state, biography);
+      } else {
+        // Se o erro não for 404, mostra mensagem de erro padrão
         console.error('Erro ao enviar dados para a API de atualização:', error);
+      }
     });
 }
 
@@ -217,17 +215,27 @@ function sendDataToUpdateAPI(email, name, age, profile, address, neighborhood, z
       },
       body: JSON.stringify(jsonData) // Passa o objeto JSON como corpo da solicitação
     })
-  .then(responseData => {
+    .then(response => {
+      if (!response.ok) {
+          // Se ocorrer um erro HTTP, verifica se é erro 404
+          if (response.status === 404) {
+              console.log('Erro 404: Registro não encontrado. Não será feita a atualização.');
+              return; // Não faz a atualização e encerra a função
+          }
+          throw new Error('Erro ao enviar dados para a API');
+      }
+      return response.json();
+    })
+    .then(responseData => {
       // Lida com a resposta da API, se necessário
       console.log('Resposta da API:', responseData);
       alert('Dados atualizados com sucesso na API.');
-  })
-  .catch(error => {
+    })
+    .catch(error => {
       console.error('Erro:', error.message);
-  });
-  const response = { message: 'Registro atualizado com sucesso.' };
-  resolve(response);
-});
+      alert('Ocorreu um erro ao enviar dados para a API. Por favor, tente novamente mais tarde.');
+    });
+  })
 }
 
 
@@ -250,14 +258,27 @@ function sendDataToCreateAPI(email, name, age,profile, address, neighborhood, zi
     formData.append('state', state);
     formData.append('biography', biography);
   
-    const jsonData = JSON.stringify(formData);
+    const jsonData = {
+      email: email,
+      name: name,
+      age: age,
+      address: address,
+      neighborhood: neighborhood,
+      zipCode: zipCode,
+      state: state,
+      biography: biography,
+    };
+    
+    if (profile) {
+      jsonData.profile = profile;
+    }
     // Faz a solicitação POST para a rota da API
     fetch('http://localhost:8080/backend/api.php', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
-      body: jsonData // Passa o objeto JSON como corpo da solicitação
+      body: JSON.stringify(jsonData)// Passa o objeto JSON como corpo da solicitação
     })
     .then(response => {
       if (!response.ok) {
