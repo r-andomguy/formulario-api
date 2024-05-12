@@ -37,14 +37,7 @@ Este guia detalha os passos necessários para configurar o ambiente de desenvolv
 
 **Configuração do Back-end:**
 
-1. **Instalação do Wampserver:**
-
-    * Baixe e instale o Wampserver a partir do site oficial
-    * Siga as instruções de instalação durante o processo de configuração.
-    * Certifique-se de que o Wampserver esteja instalado e em execução após a conclusão da instalação.
-    * Esta aplicação usa MySQL.
-
-2. **Verificação do Driver PDO:**
+1. **Verificação do Driver PDO:**
 
     * O PHP Data Objects (PDO) é uma extensão PHP necessária para se conectar a bancos de dados.
     * Para verificar se o driver PDO está instalado, abra o arquivo `php.ini` do Wampserver (geralmente localizado em `C:\wamp64\php\php.ini`).
@@ -53,10 +46,12 @@ Este guia detalha os passos necessários para configurar o ambiente de desenvolv
     * Caso contrário, remova o comentário da linha `extension=pdo_mysql` e salve o arquivo `php.ini`.
     * Reinicie o Wampserver para que as alterações tenham efeito.
 
-3. **Executando o Servidor PHP:**
+2. **Executando o Servidor PHP:**
 
     * Para executar o servidor PHP, rode:
       ```bash
-         cd .\backend\
          php -S localhost:8000
       ```
+**Futuras atualizações:**
+    * Melhorar responsividade.
+    * Implementar lógica para guardar imagens no servidor
