@@ -1,4 +1,14 @@
 // Requisições para a api
+document.getElementById('imgInput').addEventListener('change', function() {
+  var files = this.files;
+
+  if (files.length !== 1) {
+    alert('Por favor, selecione apenas um arquivo.');
+    this.value = ''; // Limpa a seleção dos arquivos
+    return;
+  }
+})
+
 
 function displayFileName() {
   const fileInput = document.getElementById('imgInput');
@@ -151,14 +161,7 @@ function sendDataToAPI() {
       console.log('Registro atualizado com sucesso:', response);
     })
     .catch(error => {
-      // Se o erro for 404, chama a função para criar um novo registro
-      if (error.response?.status === 404) {
-        console.log('Erro 404: Registro não encontrado. Chamando a função para criar um novo registro...');
-        sendDataToCreateAPI(email, name, age, profile, address, neighborhood, zipCode, state, biography);
-      } else {
-        // Se o erro não for 404, mostra mensagem de erro padrão
-        console.error('Erro ao enviar dados para a API de atualização:', error);
-      }
+      console.log('Erro encontrado na APi', error);      
     });
 }
 
@@ -220,16 +223,15 @@ function sendDataToUpdateAPI(email, name, age, profile, address, neighborhood, z
           // Se ocorrer um erro HTTP, verifica se é erro 404
           if (response.status === 404) {
               console.log('Erro 404: Registro não encontrado. Não será feita a atualização.');
+              sendDataToCreateAPI(email, name, age, profile, address, neighborhood, zipCode, state, biography);
               return; // Não faz a atualização e encerra a função
           }
-          throw new Error('Erro ao enviar dados para a API');
       }
       return response.json();
     })
     .then(responseData => {
       // Lida com a resposta da API, se necessário
       console.log('Resposta da API:', responseData);
-      alert('Dados atualizados com sucesso na API.');
     })
     .catch(error => {
       console.error('Erro:', error.message);
@@ -289,11 +291,10 @@ function sendDataToCreateAPI(email, name, age,profile, address, neighborhood, zi
     .then(responseData => {
       // Lida com a resposta da API, se necessário
       console.log('Resposta da API:', responseData);
-      alert('Dados enviados com sucesso para a API.');
+      alert('Dados criados com sucesso.');
     })
     .catch(error => {
       console.error('Erro:', error.message);
-      alert('Ocorreu um erro ao enviar dados para a API. Por favor, tente novamente mais tarde.');
     });
   }
   
