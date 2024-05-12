@@ -10,8 +10,8 @@ Este guia detalha os passos necessários para configurar o ambiente de desenvolv
 **Dependências:**
 
 * **TailwindCSS:** Uma biblioteca CSS para criar interfaces responsivas rapidamente.
-* **Wampserver:** Um servidor web local para executar o código PHP.
 * **PHP 8:** A versão mais recente do PHP para executar o código do back-end.
+* **Live Server:** Utilizar extensão Live Server para ambiente de teste do front-end.
 
 **Configuração do Front-end:**
 
